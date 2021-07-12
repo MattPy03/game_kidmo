@@ -22,15 +22,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
 
   @override
@@ -43,8 +34,22 @@ class _MyHomePageState extends State<MyHomePage> {
     30,
     (index) => Container(
       padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-      child: Text('My number is $index'),
+      decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text('My number is $index'),
+          Text(
+            'That\'s my number',
+            textScaleFactor: 0.9,
+          )
+        ]),
+        Container(
+          child: Icon(
+            Icons.person,
+            size: 26.0,
+          ),
+        )
+      ]),
     ),
   );
 
@@ -67,7 +72,12 @@ class _MyHomePageState extends State<MyHomePage> {
           Padding(
               padding: EdgeInsets.only(right: 20.0),
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SecondRoute()),
+                  );
+                },
                 child: Icon(
                   Icons.add,
                   size: 26.0,
@@ -79,6 +89,22 @@ class _MyHomePageState extends State<MyHomePage> {
           child: ListView(
         children: boxes,
       )), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class SecondRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text('Go back!'),
+        ),
+      ),
     );
   }
 }
