@@ -74,26 +74,6 @@ void main() async {
   runApp(MyApp());
 }
 
-/*
-nome const
-razza const
-classe const
-livello (1,5)
-abilita (max 5 abilita)
-specializzazione
-professione
-soldi
-hp
-hp massimi (modificabile da livello e armatura, no modifica diretta)
-armatura (da hp)
-armi (fino a 2 armi)
-inventario
-inventario attivabili
-
-//mie cose
-ultima volta aperto
-*/
-
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
 
@@ -150,24 +130,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     this.handler = DatabaseHandler();
-    // this.handler.initializeDB();
-    // this.handler.initializeDB().whenComplete(() async {
-    //   await this.handler.insertSession({
-    //     "sessionName": "prova",
-    //     "name": "nome pers.",
-    //     "time": 3,
-    //     "raceID": 0,
-    //     "raceName": "razza",
-    //     "classID": 3,
-    //     "className": "classe",
-    //     "hpMax": 20,
-    //     "hp": 20,
-    //     "ability": 0,
-    //     "specializationID": 0,
-    //     "professionID": 0,
-    //   });
-    //   setState(() {});
-    // });
   }
 
   @override
@@ -181,7 +143,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 icon: const Icon(Icons.menu),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ThirdRoute()));
+                          MaterialPageRoute(builder: (context) => ThirdRoute()))
+                      .then((_) => setState(() {
+                            this.handler.retrieveSessions();
+                          }));
+                  ;
                 },
               );
             },
@@ -194,8 +160,12 @@ class _MyHomePageState extends State<MyHomePage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => SecondRoute()),
-                    );
+                      MaterialPageRoute(
+                          builder: (context) => SecondRoute(db: handler)),
+                      //update database list after that
+                    ).then((_) => setState(() {
+                          this.handler.retrieveSessions();
+                        }));
                   },
                   child: Icon(
                     Icons.add,
@@ -249,6 +219,8 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class SecondRoute extends StatefulWidget {
+  final DatabaseHandler db;
+  SecondRoute({Key? key, required this.db}) : super(key: key);
   _SecondRouteState createState() => _SecondRouteState();
 }
 
@@ -296,7 +268,13 @@ class _SecondRouteState extends State<SecondRoute> {
     );
   }
 
-  TextEditingController characterName = TextEditingController();
+  late TextEditingController characterName; // = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    characterName = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -358,6 +336,21 @@ class _SecondRouteState extends State<SecondRoute> {
                     onPressed: () {
                       if (characterName.text == "") {
                         verifyForm(context);
+                      } else {
+                        widget.db.insertSession({
+                          "sessionName": "prova2",
+                          "time": 3,
+                          "name": characterName.text,
+                          "raceID": 0,
+                          "raceName": textValueRace,
+                          "classID": 0,
+                          "className": textValueClass,
+                          "hpMax": 20,
+                          "hp": 20,
+                          "ability": 0,
+                          "specializationID": 0,
+                          "professionID": 0
+                        });
                       }
                     },
                     child: Text("Confirm")))
