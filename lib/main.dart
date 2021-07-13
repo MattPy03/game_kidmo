@@ -121,6 +121,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late DatabaseHandler handler;
 
+<<<<<<< HEAD
   Card _generateCard(Map map) {
     return Card(
       child: Row(
@@ -143,6 +144,37 @@ class _MyHomePageState extends State<MyHomePage> {
               ))
         ],
       ),
+=======
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
+
+        //right Add Button
+        actions: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(right: 20.0),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SecondRoute()),
+                  );
+                },
+                child: Icon(
+                  Icons.add,
+                  size: 26.0,
+                ),
+              ))
+        ],
+      ),
+      body: Center(
+        child: ListView(
+          children: boxes,
+        )
+      ),
+>>>>>>> origin/master
     );
   }
 
@@ -239,15 +271,79 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class SecondRoute extends StatelessWidget {
+
+  verifyForm(BuildContext context) {
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Error"),
+      content: Text("Enter all the values."),
+      actions: [
+        TextButton(
+          child: Text("OK"),
+           onPressed: () {Navigator.of(context).pop();},
+        ),
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Text('Go back!'),
+      appBar: AppBar(
+        title: Text('Create character'),
+      ),
+      body: Center (
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextFormField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Nome personaggio'
+              ),
+            ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container (
+                  padding: const EdgeInsets.all(15),
+                  child: 
+                    ElevatedButton(
+                      onPressed: () {Navigator.pop(context);},
+                      child: Text("Go back"),
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.red
+                      )
+                    )
+                ),
+                Container (
+                  padding: const EdgeInsets.all(15),
+                  child:
+                    ElevatedButton(
+                    onPressed: () {
+
+                      //Controllo textfield se ci sono dati o meno
+
+                      // if () {
+                      //   verifyForm(context);
+                      // }
+                    },
+                    child: Text("Confirm")
+                  )
+                )
+              ]
+            )
+          ]
         ),
       ),
     );
