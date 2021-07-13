@@ -238,12 +238,35 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class SecondRoute extends StatelessWidget {
+class SecondRoute extends StatefulWidget {
+  _SecondRouteState createState() => _SecondRouteState();
+}
+
+class _SecondRouteState extends State<SecondRoute> {
+  String textValueRace = "Umano";
+  String textValueClass = "Reietto";
+  List<String> _itemsRace = [
+    'Umano',
+    'Orco',
+    'Nano',
+    'Elfo',
+    'Mezzo-Orco',
+    'Mezzo-Elfo',
+    'Mezzo-Umano'
+  ];
+  List<String> _itemsClass = [
+    'Reietto',
+    'Mago',
+    'Guerriero',
+    'Bardo',
+    'Stregone'
+  ];
+
   verifyForm(BuildContext context) {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Error"),
-      content: Text("Enter all the values."),
+      title: Text("Errore"),
+      content: Text("Inserisci il nome del personaggio!"),
       actions: [
         TextButton(
           child: Text("OK"),
@@ -263,17 +286,51 @@ class SecondRoute extends StatelessWidget {
     );
   }
 
+  TextEditingController characterName = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create character'),
+        title: Text('Crea personaggio'),
       ),
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           TextFormField(
             decoration: InputDecoration(
                 border: OutlineInputBorder(), labelText: 'Nome personaggio'),
+            controller: characterName,
+            validator: (value) {},
+          ),
+          DropdownButton(
+            hint: Text("Scegli la razza"),
+            onChanged: (String? newValue) {
+              setState(() {
+                textValueRace = newValue!;
+              });
+            },
+            value: textValueRace,
+            items: _itemsRace.map((location) {
+              return DropdownMenuItem(
+                child: new Text(location),
+                value: location,
+              );
+            }).toList(),
+          ),
+          DropdownButton(
+            hint: Text("Scegli la classe"),
+            onChanged: (String? newValue) {
+              setState(() {
+                textValueClass = newValue!;
+              });
+            },
+            value: textValueClass,
+            items: _itemsClass.map((location) {
+              return DropdownMenuItem(
+                child: new Text(location),
+                value: location,
+              );
+            }).toList(),
           ),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Container(
@@ -287,16 +344,55 @@ class SecondRoute extends StatelessWidget {
             Container(
                 padding: const EdgeInsets.all(15),
                 child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: Colors.green),
                     onPressed: () {
-                      //Controllo textfield se ci sono dati o meno
-
-                      // if () {
-                      //   verifyForm(context);
-                      // }
+                      if (characterName.text == "") {
+                        verifyForm(context);
+                      }
                     },
                     child: Text("Confirm")))
           ])
         ]),
+      ),
+    );
+  }
+}
+
+class ThirdRoute extends StatefulWidget {
+  _ThirdRouteState createState() => _ThirdRouteState();
+}
+
+class _ThirdRouteState extends State<ThirdRoute> {
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Scheda personaggio'),
+      ),
+      drawer: Drawer(
+        child: Container(
+            decoration: BoxDecoration(color: Colors.lightBlue),
+            child: Column(
+              children: <Widget>[
+                ListTile(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: Text('Scheda personaggio'),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: Text('Torna alla home'),
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => MyApp()));
+                  },
+                ),
+              ],
+            )),
       ),
     );
   }
