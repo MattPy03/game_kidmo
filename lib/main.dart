@@ -4,20 +4,73 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+class DatabaseHandler {
+  Future<Database> initializeDB() async {
+    String path = await getDatabasesPath();
+    return openDatabase(
+      join(path, 'kidmo_game.db'),
+      onCreate: (database, version) async {
+        await database.execute(
+          '''CREATE TABLE sessions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          sessionName varchar(50) not null,
+          time int(32) not null,
+          name varchar(50) not null,
+          raceID int(8) not null,
+          raceName varchar(30) not null,
+          classID int(8) not null,
+          className varchar(30) not null,
+          level int(4) not null default 1,
+          hpMax int(16) not null,
+          hp int(16) not null,
+          ability int(8) not null,
+          specializationID int(4) not null,
+          specializationName varchar(50),
+          professionID int(4) not null,
+          professionName varchar(50),
+          money int(32) not null default 0,
+          hpArmor int(32) not null default 0,
+          armorName varchar(30),
+          weapon1Damage int(32) not null default 0,
+          weapon1Name varchar(30),
+          multipleWeap int(1) not null default 1,
+          weapon2Damage int(32) not null default 0,
+          weapon2Name varchar(30)
+          );''',
+        );
+      },
+      version: 1,
+    );
+  }
+
+  Future<void> insertSession(Map<String, Object?> values) async {
+    // Get a reference to the database.
+    final db = await initializeDB();
+    await db.insert(
+      'sessions',
+      values,
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<List<Map>> retrieveSessions() async {
+    final Database db = await initializeDB();
+    return await db.query('sessions');
+  }
+
+  Future<void> deleteSession(int id) async {
+    final db = await initializeDB();
+    await db.delete(
+      'sessions',
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-// Open the database and store the reference.
-  final database = openDatabase(
-    // Set the path to the database. Note: Using the `join` function from the
-    // `path` package is best practice to ensure the path is correctly
-    // constructed for each platform.
-    join(await getDatabasesPath(), 'kidmo_game.db'),
-    onCreate: (db, version) {
-      return db.execute(
-        'CREATE TABLE IF NOT EXISTS sessions (id INTEGER PRIMARY KEY AUTOINCREMENT, nome varchar(50) not null, race varchar(30) not null, class varchar(30) not null, level int(4) not null, );',
-      );
-    },
-  );
+
   runApp(MyApp());
 }
 
@@ -66,67 +119,122 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //generate list of boxes
-  final boxes = List<Widget>.generate(
-    30,
-    (index) => Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-      child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('My number is $index'),
-          Text(
-            'That\'s my number',
-            textScaleFactor: 0.9,
-          )
-        ]),
-        Container(
-          child: Icon(
-            Icons.person,
-            size: 26.0,
-          ),
-        )
-      ]),
-    ),
-  );
+  late DatabaseHandler handler;
 
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-
-        //right Add Button
-        actions: <Widget>[
-          Padding(
-              padding: EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SecondRoute()),
-                  );
-                },
-                child: Icon(
-                  Icons.add,
-                  size: 26.0,
-                ),
+  Card _generateCard(Map map) {
+    return Card(
+      child: Row(
+        children: [
+          Expanded(
+              child: ListTile(
+            title: Text(map["sessionName"]),
+            subtitle: Text(map["name"]),
+          )),
+          Container(
+              padding: EdgeInsets.only(right: 20),
+              child: Column(
+                children: [
+                  Text(map["money"].toString() + " monete"),
+                  Text(map["hp"].toString() +
+                      "/" +
+                      map["hpMax"].toString() +
+                      " vita")
+                ],
               ))
         ],
       ),
-      body: Center(
-          child: ListView(
-        children: boxes,
-      )), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    this.handler = DatabaseHandler();
+    this.handler.initializeDB();
+    this.handler.initializeDB().whenComplete(() async {
+      await this.handler.insertSession({
+        "sessionName": "prova",
+        "name": "nome pers.",
+        "time": 3,
+        "raceID": 0,
+        "raceName": "razza",
+        "classID": 3,
+        "className": "classe",
+        "hpMax": 20,
+        "hp": 20,
+        "ability": 0,
+        "specializationID": 0,
+        "professionID": 0,
+      });
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.title),
+
+          //right Add Button
+          actions: <Widget>[
+            Padding(
+                padding: EdgeInsets.only(right: 20.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SecondRoute()),
+                    );
+                  },
+                  child: Icon(
+                    Icons.add,
+                    size: 26.0,
+                  ),
+                ))
+          ],
+        ),
+        body: FutureBuilder(
+          //need to use DatabaseHandler
+          future: this.handler.retrieveSessions(),
+          builder: (BuildContext context, AsyncSnapshot<List<Map>> snapshot) {
+            //if has data
+            if (snapshot.hasData) {
+              //create a scrollable list
+              return ListView.builder(
+                itemCount: snapshot.data?.length,
+                itemBuilder: (BuildContext context, int index) {
+                  //the box in the list can be removed sliding it on the right
+                  return Dismissible(
+                      direction: DismissDirection.startToEnd,
+
+                      //box showed when sliding
+                      background: Container(
+                        color: Colors.red,
+                        alignment: Alignment.centerLeft,
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Icon(Icons.delete_forever),
+                      ),
+                      key: UniqueKey(),
+                      //when the box is removed
+                      onDismissed: (DismissDirection direction) async {
+                        //remove from db the session
+                        await this
+                            .handler
+                            .deleteSession(snapshot.data![index]["id"]!);
+                        setState(() {
+                          snapshot.data!.remove(snapshot.data![index]);
+                        });
+                      },
+                      //positioning
+                      child: _generateCard(snapshot.data![index]));
+                },
+              );
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ));
   }
 }
 
