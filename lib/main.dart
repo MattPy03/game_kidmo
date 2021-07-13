@@ -54,8 +54,24 @@ class DatabaseHandler {
   }
 
   Future<List<Map>> retrieveSessions() async {
+    List<String> columnsToSelect = [
+      "id",
+      "name",
+      "sessionName",
+      "money",
+      "hp",
+      "hpMax"
+    ];
     final Database db = await initializeDB();
-    return await db.query('sessions');
+
+    return await db.query('sessions', columns: columnsToSelect);
+  }
+
+  Future<Map> retrieveSession(int id) async {
+    final Database db = await initializeDB();
+    List<Map> res =
+        await db.query('sessions', where: "id = ?", whereArgs: [id]);
+    return res[0];
   }
 
   Future<void> deleteSession(int id) async {
@@ -105,7 +121,10 @@ class _MyHomePageState extends State<MyHomePage> {
     return GestureDetector(
         onTap: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (context) => ThirdRoute()));
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      ThirdRoute(db: handler, id: map["id"])));
         },
         child: Card(
           child: Row(
@@ -355,11 +374,15 @@ class _SecondRouteState extends State<SecondRoute> {
 }
 
 class ThirdRoute extends StatefulWidget {
+  final DatabaseHandler db;
+  final int id;
+  ThirdRoute({Key? key, required this.db, required this.id}) : super(key: key);
   _ThirdRouteState createState() => _ThirdRouteState();
 }
 
 class _ThirdRouteState extends State<ThirdRoute> {
   Widget build(BuildContext context) {
+    // widget.db.retrieveSessions();
     return Scaffold(
       appBar: AppBar(
         title: Text('Scheda personaggio'),
