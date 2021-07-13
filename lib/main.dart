@@ -101,29 +101,34 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late DatabaseHandler handler;
 
-  Card _generateCard(Map map) {
-    return Card(
-      child: Row(
-        children: [
-          Expanded(
-              child: ListTile(
-            title: Text(map["sessionName"]),
-            subtitle: Text(map["name"]),
-          )),
-          Container(
-              padding: EdgeInsets.only(right: 20),
-              child: Column(
-                children: [
-                  Text(map["money"].toString() + " monete"),
-                  Text(map["hp"].toString() +
-                      "/" +
-                      map["hpMax"].toString() +
-                      " vita")
-                ],
-              ))
-        ],
-      ),
-    );
+  GestureDetector _generateCard(Map map, var context) {
+    return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => ThirdRoute()));
+        },
+        child: Card(
+          child: Row(
+            children: [
+              Expanded(
+                  child: ListTile(
+                title: Text(map["sessionName"]),
+                subtitle: Text(map["name"]),
+              )),
+              Container(
+                  padding: EdgeInsets.only(right: 20),
+                  child: Column(
+                    children: [
+                      Text(map["money"].toString() + " monete"),
+                      Text(map["hp"].toString() +
+                          "/" +
+                          map["hpMax"].toString() +
+                          " vita")
+                    ],
+                  ))
+            ],
+          ),
+        ));
   }
 
   @override
@@ -137,21 +142,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
-          leading: Builder(
-            builder: (BuildContext context) {
-              return IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () {
-                  Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => ThirdRoute()))
-                      .then((_) => setState(() {
-                            this.handler.retrieveSessions();
-                          }));
-                  ;
-                },
-              );
-            },
-          ),
           //right Add Button
           actions: <Widget>[
             Padding(
@@ -207,7 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         });
                       },
                       //positioning
-                      child: _generateCard(snapshot.data![index]));
+                      child: _generateCard(snapshot.data![index], context));
                 },
               );
             } else {
@@ -351,6 +341,9 @@ class _SecondRouteState extends State<SecondRoute> {
                           "specializationID": 0,
                           "professionID": 0
                         });
+                        //TODO ottimizzare
+                        Navigator.pop(context,
+                            MaterialPageRoute(builder: (context) => MyApp()));
                       }
                     },
                     child: Text("Confirm")))
