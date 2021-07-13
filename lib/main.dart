@@ -29,6 +29,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
   //generate list of boxes
   final boxes = List<Widget>.generate(
     30,
@@ -58,7 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
-
         //right Add Button
         actions: <Widget>[
           Padding(
@@ -77,6 +77,16 @@ class _MyHomePageState extends State<MyHomePage> {
               )
           )
         ],
+        leading: Builder(
+          builder: (BuildContext context) {
+            return IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () { Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ThirdRoute())); },
+            );
+          },
+        ),
       ),
       body: Center(
         child: ListView(
@@ -196,11 +206,9 @@ class _SecondRouteState extends State<SecondRoute> {
                         primary: Colors.green
                       ),
                       onPressed: () {
-
                         if (characterName.text == "") {
                           verifyForm(context);
                         }
-
                       },
                       child: Text("Confirm")
                     )
@@ -208,6 +216,48 @@ class _SecondRouteState extends State<SecondRoute> {
               ]
             )
           ]
+        ),
+      ),
+    );
+  }
+}
+
+class ThirdRoute extends StatefulWidget {
+  _ThirdRouteState createState() => _ThirdRouteState();
+}
+
+class _ThirdRouteState extends State<ThirdRoute> {
+  Widget build(BuildContext context) {
+    return Scaffold (
+      appBar: AppBar(
+        title: Text('Scheda personaggio'),
+      ),
+      drawer: Drawer(
+        child: Container( 
+          decoration: BoxDecoration(color: Colors.lightBlue),
+          child: Column ( 
+            children: <Widget>[
+              ListTile(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('Scheda personaggio'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: Text('Torna alla home'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MyApp())); 
+                },
+              ),
+            ], 
+          )
         ),
       ),
     );
