@@ -150,24 +150,24 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     this.handler = DatabaseHandler();
-    this.handler.initializeDB();
-    this.handler.initializeDB().whenComplete(() async {
-      await this.handler.insertSession({
-        "sessionName": "prova",
-        "name": "nome pers.",
-        "time": 3,
-        "raceID": 0,
-        "raceName": "razza",
-        "classID": 3,
-        "className": "classe",
-        "hpMax": 20,
-        "hp": 20,
-        "ability": 0,
-        "specializationID": 0,
-        "professionID": 0,
-      });
-      setState(() {});
-    });
+    // this.handler.initializeDB();
+    // this.handler.initializeDB().whenComplete(() async {
+    //   await this.handler.insertSession({
+    //     "sessionName": "prova",
+    //     "name": "nome pers.",
+    //     "time": 3,
+    //     "raceID": 0,
+    //     "raceName": "razza",
+    //     "classID": 3,
+    //     "className": "classe",
+    //     "hpMax": 20,
+    //     "hp": 20,
+    //     "ability": 0,
+    //     "specializationID": 0,
+    //     "professionID": 0,
+    //   });
+    //   setState(() {});
+    // });
   }
 
   @override
