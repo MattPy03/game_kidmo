@@ -1,8 +1,45 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
-void main() {
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+// Open the database and store the reference.
+  final database = openDatabase(
+    // Set the path to the database. Note: Using the `join` function from the
+    // `path` package is best practice to ensure the path is correctly
+    // constructed for each platform.
+    join(await getDatabasesPath(), 'kidmo_game.db'),
+    onCreate: (db, version) {
+      return db.execute(
+        'CREATE TABLE IF NOT EXISTS sessions (id INTEGER PRIMARY KEY AUTOINCREMENT, nome varchar(50) not null, race varchar(30) not null, class varchar(30) not null, level int(4) not null, );',
+      );
+    },
+  );
   runApp(MyApp());
 }
+
+/*
+nome const
+razza const
+classe const
+livello (1,5)
+abilita (max 5 abilita)
+specializzazione
+professione
+soldi
+hp
+hp massimi (modificabile da livello e armatura, no modifica diretta)
+armatura (da hp)
+armi (fino a 2 armi)
+inventario
+inventario attivabili
+
+//mie cose
+ultima volta aperto
+*/
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
