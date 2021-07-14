@@ -488,31 +488,34 @@ class _ThirdRouteState extends State<ThirdRoute> {
           future: widget.db.retrieveSession(widget.id),
           builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
             if (snapshot.hasData) {
-              return SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _createRow("Nome", snapshot.data!["name"]),
-                      _createRow("Razza", snapshot.data!["raceName"]),
-                      _createRow("Classe", snapshot.data!["className"]),
-                      _createUpdatableRow(
-                          "Livello",
-                          snapshot.data!["level"].toString(),
-                          _level,
-                          true,
-                          1,
-                          5),
-                      _createRow("Vita",
-                          '${snapshot.data!["hp"]}/${snapshot.data!["hpMax"]}'),
-                      _createUpdatableRow(
-                          "Monete", "${snapshot.data!["money"]}", _money, true),
-                      _createUpdatableRow(
-                          "specializzazione",
-                          snapshot.data!["specializationName"].toString(),
-                          _specialization)
-                    ],
-                  ));
+              return GestureDetector(
+                  //when click outside keyboard close keyboard
+                  onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                  child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _createRow("Nome", snapshot.data!["name"]),
+                          _createRow("Razza", snapshot.data!["raceName"]),
+                          _createRow("Classe", snapshot.data!["className"]),
+                          _createUpdatableRow(
+                              "Livello",
+                              snapshot.data!["level"].toString(),
+                              _level,
+                              true,
+                              1,
+                              5),
+                          _createRow("Vita",
+                              '${snapshot.data!["hp"]}/${snapshot.data!["hpMax"]}'),
+                          _createUpdatableRow("Monete",
+                              "${snapshot.data!["money"]}", _money, true),
+                          _createUpdatableRow(
+                              "specializzazione",
+                              snapshot.data!["specializationName"].toString(),
+                              _specialization)
+                        ],
+                      )));
             } else {
               return Center(child: CircularProgressIndicator());
             }
