@@ -475,6 +475,15 @@ class _ThirdRouteState extends State<ThirdRoute> {
     });
   }
 
+  void _update() {
+    Map<String, dynamic> values = {
+      "level": int.parse(_level.text),
+      "specializationName": _specialization.text,
+      "money": int.parse(_money.text)
+    };
+    widget.db.updateSession(widget.id, values);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -507,16 +516,14 @@ class _ThirdRouteState extends State<ThirdRoute> {
                               Container(
                                   padding: const EdgeInsets.all(15),
                                   child: ElevatedButton(
-                                      onPressed: () {},
+                                      onPressed: () => _update(),
                                       child: Text("Salva"),
                                       style: ElevatedButton.styleFrom(
                                           primary: Colors.green))),
                               Container(
                                   padding: const EdgeInsets.all(15),
                                   child: ElevatedButton(
-                                      onPressed: () {
-                                        _restore();
-                                      },
+                                      onPressed: () => _restore(),
                                       child: Text("Ripristina"),
                                       style: ElevatedButton.styleFrom(
                                           primary: Colors.red))),
