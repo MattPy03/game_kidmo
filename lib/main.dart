@@ -286,11 +286,13 @@ class _SecondRouteState extends State<SecondRoute> {
   }
 
   late TextEditingController characterName; // = TextEditingController();
+  late TextEditingController sessionName;
 
   @override
   void initState() {
     super.initState();
     characterName = TextEditingController();
+    sessionName = TextEditingController();
   }
 
   @override
@@ -301,6 +303,12 @@ class _SecondRouteState extends State<SecondRoute> {
       ),
       body: Center(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          TextFormField(
+            decoration: InputDecoration(
+                border: OutlineInputBorder(), labelText: 'Nome della sessione'),
+            controller: sessionName,
+            validator: (value) {},
+          ),
           TextFormField(
             decoration: InputDecoration(
                 border: OutlineInputBorder(), labelText: 'Nome personaggio'),
@@ -351,12 +359,12 @@ class _SecondRouteState extends State<SecondRoute> {
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(primary: Colors.green),
                     onPressed: () async {
-                      if (characterName.text == "") {
+                      if (characterName.text == "" || sessionName.text == "") {
                         verifyForm(context);
                       } else {
                         int id = await widget.db.insertSession({
-                          "sessionName": "prova2",
-                          "time": 3,
+                          "sessionName": sessionName.text,
+                          "time": DateTime.now().millisecondsSinceEpoch ~/ 1000,
                           "name": characterName.text,
                           "raceID": 0,
                           "raceName": textValueRace,
