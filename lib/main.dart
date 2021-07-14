@@ -138,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Expanded(
                   child: ListTile(
                 title: Text(map["sessionName"]),
-                subtitle: Text(map["name"]),
+                subtitle: Text(map["name"], overflow: TextOverflow.ellipsis),
               )),
               Container(
                   padding: EdgeInsets.only(right: 20),
