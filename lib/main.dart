@@ -74,6 +74,12 @@ class DatabaseHandler {
     return res[0];
   }
 
+  // id-> the id of row to change, values -> map representing columns and their new value
+  Future<void> updateSession(int id, Map<String, Object?> values) async {
+    final Database db = await initializeDB();
+    await db.update('sessions', values, where: "id = ?", whereArgs: [id]);
+  }
+
   Future<void> deleteSession(int id) async {
     final db = await initializeDB();
     await db.delete(
