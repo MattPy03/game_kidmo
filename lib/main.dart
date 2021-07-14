@@ -242,8 +242,8 @@ class SecondRoute extends StatefulWidget {
 }
 
 class _SecondRouteState extends State<SecondRoute> {
-  String textValueRace = "Umano";
-  String textValueClass = "Reietto";
+  String _textValueRace = "Umano";
+  String _textValueClass = "Reietto";
   List<String> _itemsRace = [
     'Umano',
     'Orco',
@@ -261,7 +261,7 @@ class _SecondRouteState extends State<SecondRoute> {
     'Stregone'
   ];
 
-  verifyForm(BuildContext context) {
+  _verifyForm(BuildContext context) {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Errore"),
@@ -320,10 +320,10 @@ class _SecondRouteState extends State<SecondRoute> {
             hint: Text("Scegli la razza"),
             onChanged: (String? newValue) {
               setState(() {
-                textValueRace = newValue!;
+                _textValueRace = newValue!;
               });
             },
-            value: textValueRace,
+            value: _textValueRace,
             items: _itemsRace.map((location) {
               return DropdownMenuItem(
                 child: new Text(location),
@@ -335,10 +335,10 @@ class _SecondRouteState extends State<SecondRoute> {
             hint: Text("Scegli la classe"),
             onChanged: (String? newValue) {
               setState(() {
-                textValueClass = newValue!;
+                _textValueClass = newValue!;
               });
             },
-            value: textValueClass,
+            value: _textValueClass,
             items: _itemsClass.map((location) {
               return DropdownMenuItem(
                 child: new Text(location),
@@ -361,16 +361,16 @@ class _SecondRouteState extends State<SecondRoute> {
                     style: ElevatedButton.styleFrom(primary: Colors.green),
                     onPressed: () async {
                       if (characterName.text == "" || sessionName.text == "") {
-                        verifyForm(context);
+                        _verifyForm(context);
                       } else {
                         int id = await widget.db.insertSession({
                           "sessionName": sessionName.text,
                           "time": DateTime.now().millisecondsSinceEpoch ~/ 1000,
                           "name": characterName.text,
                           "raceID": 0,
-                          "raceName": textValueRace,
+                          "raceName": _textValueRace,
                           "classID": 0,
-                          "className": textValueClass,
+                          "className": _textValueClass,
                           "hpMax": 20,
                           "hp": 20,
                           "ability": 0,
