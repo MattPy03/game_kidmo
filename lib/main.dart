@@ -129,10 +129,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return GestureDetector(
         onTap: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      ThirdRoute(db: handler, id: map["id"])));
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ThirdRoute(db: handler, id: map["id"])))
+              .then((_) => setState(() {
+                    this.handler.retrieveSessions();
+                  }));
         },
         child: Card(
           child: Row(
@@ -479,7 +482,8 @@ class _ThirdRouteState extends State<ThirdRoute> {
     Map<String, dynamic> values = {
       "level": int.parse(_level.text),
       "specializationName": _specialization.text,
-      "money": int.parse(_money.text)
+      "money": int.parse(_money.text),
+      "time": DateTime.now().millisecondsSinceEpoch ~/ 1000,
     };
     widget.db.updateSession(widget.id, values);
   }
