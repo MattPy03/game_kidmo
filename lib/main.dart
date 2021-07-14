@@ -64,7 +64,8 @@ class DatabaseHandler {
     ];
     final Database db = await initializeDB();
 
-    return await db.query('sessions', columns: columnsToSelect);
+    return await db.query('sessions',
+        columns: columnsToSelect, orderBy: "time DESC");
   }
 
   Future<Map> retrieveSession(int id) async {
