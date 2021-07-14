@@ -43,10 +43,10 @@ class DatabaseHandler {
     );
   }
 
-  Future<void> insertSession(Map<String, Object?> values) async {
+  Future<int> insertSession(Map<String, Object?> values) async {
     // Get a reference to the database.
     final db = await initializeDB();
-    await db.insert(
+    return await db.insert(
       'sessions',
       values,
       conflictAlgorithm: ConflictAlgorithm.replace,
@@ -348,11 +348,11 @@ class _SecondRouteState extends State<SecondRoute> {
                 padding: const EdgeInsets.all(15),
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(primary: Colors.green),
-                    onPressed: () {
+                    onPressed: () async {
                       if (characterName.text == "") {
                         verifyForm(context);
                       } else {
-                        widget.db.insertSession({
+                        int id = await widget.db.insertSession({
                           "sessionName": "prova2",
                           "time": 3,
                           "name": characterName.text,
@@ -366,9 +366,11 @@ class _SecondRouteState extends State<SecondRoute> {
                           "specializationID": 0,
                           "professionID": 0
                         });
-                        //TODO ottimizzare
-                        Navigator.pop(context,
-                            MaterialPageRoute(builder: (context) => MyApp()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ThirdRoute(db: widget.db, id: id)));
                       }
                     },
                     child: Text("Confirm")))
@@ -412,7 +414,7 @@ class _ThirdRouteState extends State<ThirdRoute> {
                 ListTile(
                   title: Text('Torna alla home'),
                   onTap: () {
-                    Navigator.push(context,
+                    Navigator.pushReplacement(context,
                         MaterialPageRoute(builder: (context) => MyApp()));
                   },
                 ),
