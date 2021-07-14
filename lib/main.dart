@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:flutter/services.dart';
 
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -25,17 +26,17 @@ class DatabaseHandler {
           hp int(16) not null,
           ability int(8) not null,
           specializationID int(4) not null,
-          specializationName varchar(50),
+          specializationName varchar(50) not null default 'Nessuna',
           professionID int(4) not null,
-          professionName varchar(50),
+          professionName varchar(50) not null default 'Nessuna',
           money int(32) not null default 0,
           hpArmor int(32) not null default 0,
-          armorName varchar(30),
+          armorName varchar(30) not null default 'Nessuna',
           weapon1Damage int(32) not null default 0,
-          weapon1Name varchar(30),
+          weapon1Name varchar(30) not null default 'Nessuna',
           multipleWeap int(1) not null default 1,
           weapon2Damage int(32) not null default 0,
-          weapon2Name varchar(30)
+          weapon2Name varchar(30) not null default 'Nessuna'
           );''',
         );
       },
@@ -399,6 +400,11 @@ class ThirdRoute extends StatefulWidget {
 }
 
 class _ThirdRouteState extends State<ThirdRoute> {
+  late TextEditingController money;
+  late TextEditingController life;
+  late TextEditingController specialization;
+  late TextEditingController level;
+
   Container _createRow(String index, String value) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
@@ -416,6 +422,59 @@ class _ThirdRouteState extends State<ThirdRoute> {
     );
   }
 
+  Container _createUpdatableRow(
+      String index, String value, TextEditingController controller,
+      [bool isNum = false, int? min, int? max]) {
+    if (min != null && max != null && min > max) {
+      max += min;
+      min = max - min;
+      max -= min;
+    }
+    controller.text = value;
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(index, style: TextStyle(fontSize: 15, color: Colors.grey)),
+          TextFormField(
+            //select all text inside text field
+            onTap: () => controller.selection = TextSelection(
+                baseOffset: 0, extentOffset: controller.value.text.length),
+            //choose if show only number keyboard or normal one
+            keyboardType: isNum ? TextInputType.number : TextInputType.text,
+            //choose if allow every charaters or only digit
+            inputFormatters:
+                isNum ? [FilteringTextInputFormatter.digitsOnly] : [],
+            style: TextStyle(fontSize: 20),
+            controller: controller,
+            decoration: InputDecoration(
+              border: UnderlineInputBorder(),
+            ),
+            onChanged: (String tfValue) {
+              if (tfValue != "" && isNum) {
+                if (min != null && int.parse(tfValue) < min) {
+                  controller.text = min.toString();
+                } else if (max != null && int.parse(tfValue) > max) {
+                  controller.text = max.toString();
+                }
+              }
+            },
+          )
+        ],
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    level = TextEditingController();
+    money = TextEditingController();
+    life = TextEditingController();
+    specialization = TextEditingController();
+  }
+
   Widget build(BuildContext context) {
     // widget.db.retrieveSessions();
     return Scaffold(
@@ -426,17 +485,31 @@ class _ThirdRouteState extends State<ThirdRoute> {
           future: widget.db.retrieveSession(widget.id),
           builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
             if (snapshot.hasData) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _createRow("Nome", snapshot.data!["name"]),
-                  _createRow("Razza", snapshot.data!["raceName"]),
-                  _createRow("Classe", snapshot.data!["className"]),
-                  _createRow("Livello", snapshot.data!["level"].toString()),
-                  _createRow("Vita",
-                      '${snapshot.data!["hp"]}/${snapshot.data!["hpMax"]}'),
-                ],
-              );
+              return SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _createRow("Nome", snapshot.data!["name"]),
+                      _createRow("Razza", snapshot.data!["raceName"]),
+                      _createRow("Classe", snapshot.data!["className"]),
+                      _createUpdatableRow(
+                          "Livello",
+                          snapshot.data!["level"].toString(),
+                          level,
+                          true,
+                          1,
+                          5),
+                      _createRow("Vita",
+                          '${snapshot.data!["hp"]}/${snapshot.data!["hpMax"]}'),
+                      _createUpdatableRow(
+                          "Monete", "${snapshot.data!["money"]}", money, true),
+                      _createUpdatableRow(
+                          "specializzazione",
+                          snapshot.data!["specializationName"].toString(),
+                          specialization)
+                    ],
+                  ));
             } else {
               return Center(child: CircularProgressIndicator());
             }
