@@ -391,12 +391,48 @@ class ThirdRoute extends StatefulWidget {
 }
 
 class _ThirdRouteState extends State<ThirdRoute> {
+  Container _createRow(String index, String value) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(index, style: TextStyle(fontSize: 15, color: Colors.grey)),
+          Text(
+            value,
+            style: TextStyle(fontSize: 20),
+            textAlign: TextAlign.left,
+          )
+        ],
+      ),
+    );
+  }
+
   Widget build(BuildContext context) {
     // widget.db.retrieveSessions();
     return Scaffold(
       appBar: AppBar(
         title: Text('Scheda personaggio'),
       ),
+      body: FutureBuilder(
+          future: widget.db.retrieveSession(widget.id),
+          builder: (BuildContext context, AsyncSnapshot<Map> snapshot) {
+            if (snapshot.hasData) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _createRow("Nome", snapshot.data!["name"]),
+                  _createRow("Razza", snapshot.data!["raceName"]),
+                  _createRow("Classe", snapshot.data!["className"]),
+                  _createRow("Livello", snapshot.data!["level"].toString()),
+                  _createRow("Vita",
+                      '${snapshot.data!["hp"]}/${snapshot.data!["hpMax"]}'),
+                ],
+              );
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          }),
       drawer: Drawer(
         child: Container(
             decoration: BoxDecoration(color: Colors.lightBlue),
