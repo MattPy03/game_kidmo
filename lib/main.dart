@@ -263,7 +263,8 @@ class _SecondRouteState extends State<SecondRoute> {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Errore"),
-      content: Text("Inserisci il nome del personaggio!"),
+      content:
+          Text("Inserisci il nome della sessione e il nome del personaggio!"),
       actions: [
         TextButton(
           child: Text("OK"),
@@ -366,7 +367,7 @@ class _SecondRouteState extends State<SecondRoute> {
                           "specializationID": 0,
                           "professionID": 0
                         });
-                        Navigator.push(
+                        Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
@@ -414,8 +415,9 @@ class _ThirdRouteState extends State<ThirdRoute> {
                 ListTile(
                   title: Text('Torna alla home'),
                   onTap: () {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => MyApp()));
+                    // Navigator.pushReplacement(context,
+                    //     MaterialPageRoute(builder: (context) => MyApp()));
+                    Navigator.of(context).popUntil((route) => route.isFirst);
                   },
                 ),
               ],
