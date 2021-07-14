@@ -424,7 +424,10 @@ class _ThirdRouteState extends State<ThirdRoute> {
 
   Container _createUpdatableRow(
       String index, String value, TextEditingController controller,
-      [bool isNum = false, int? min, int? max]) {
+      //optional values
+      [bool isNum = false,
+      int? min,
+      int? max]) {
     if (min != null && max != null && min > max) {
       max += min;
       min = max - min;
