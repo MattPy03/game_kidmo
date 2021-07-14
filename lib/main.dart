@@ -469,6 +469,12 @@ class _ThirdRouteState extends State<ThirdRoute> {
     );
   }
 
+  void _restore() {
+    setState(() {
+      widget.db.retrieveSession(widget.id);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -496,6 +502,26 @@ class _ThirdRouteState extends State<ThirdRoute> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Row(
+                            children: [
+                              Container(
+                                  padding: const EdgeInsets.all(15),
+                                  child: ElevatedButton(
+                                      onPressed: () {},
+                                      child: Text("Salva"),
+                                      style: ElevatedButton.styleFrom(
+                                          primary: Colors.green))),
+                              Container(
+                                  padding: const EdgeInsets.all(15),
+                                  child: ElevatedButton(
+                                      onPressed: () {
+                                        _restore();
+                                      },
+                                      child: Text("Ripristina"),
+                                      style: ElevatedButton.styleFrom(
+                                          primary: Colors.red))),
+                            ],
+                          ),
                           _createRow("Nome", snapshot.data!["name"]),
                           _createRow("Razza", snapshot.data!["raceName"]),
                           _createRow("Classe", snapshot.data!["className"]),
@@ -513,7 +539,7 @@ class _ThirdRouteState extends State<ThirdRoute> {
                           _createUpdatableRow(
                               "specializzazione",
                               snapshot.data!["specializationName"].toString(),
-                              _specialization)
+                              _specialization),
                         ],
                       )));
             } else {
