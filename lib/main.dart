@@ -400,10 +400,10 @@ class ThirdRoute extends StatefulWidget {
 }
 
 class _ThirdRouteState extends State<ThirdRoute> {
-  late TextEditingController money;
-  late TextEditingController life;
-  late TextEditingController specialization;
-  late TextEditingController level;
+  late TextEditingController _money;
+  late TextEditingController _life;
+  late TextEditingController _specialization;
+  late TextEditingController _level;
 
   Container _createRow(String index, String value) {
     return Container(
@@ -472,10 +472,10 @@ class _ThirdRouteState extends State<ThirdRoute> {
   @override
   void initState() {
     super.initState();
-    level = TextEditingController();
-    money = TextEditingController();
-    life = TextEditingController();
-    specialization = TextEditingController();
+    _level = TextEditingController();
+    _money = TextEditingController();
+    _life = TextEditingController();
+    _specialization = TextEditingController();
   }
 
   Widget build(BuildContext context) {
@@ -499,18 +499,18 @@ class _ThirdRouteState extends State<ThirdRoute> {
                       _createUpdatableRow(
                           "Livello",
                           snapshot.data!["level"].toString(),
-                          level,
+                          _level,
                           true,
                           1,
                           5),
                       _createRow("Vita",
                           '${snapshot.data!["hp"]}/${snapshot.data!["hpMax"]}'),
                       _createUpdatableRow(
-                          "Monete", "${snapshot.data!["money"]}", money, true),
+                          "Monete", "${snapshot.data!["money"]}", _money, true),
                       _createUpdatableRow(
                           "specializzazione",
                           snapshot.data!["specializationName"].toString(),
-                          specialization)
+                          _specialization)
                     ],
                   ));
             } else {
