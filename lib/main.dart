@@ -320,7 +320,6 @@ class _SecondRouteState extends State<SecondRoute> {
             validator: (value) {},
           ),
           DropdownButton(
-            hint: Text("Scegli la razza"),
             onChanged: (String? newValue) {
               setState(() {
                 _textValueRace = newValue!;
@@ -335,7 +334,6 @@ class _SecondRouteState extends State<SecondRoute> {
             }).toList(),
           ),
           DropdownButton(
-            hint: Text("Scegli la classe"),
             onChanged: (String? newValue) {
               setState(() {
                 _textValueClass = newValue!;
@@ -374,8 +372,8 @@ class _SecondRouteState extends State<SecondRoute> {
                           "raceName": _textValueRace,
                           "classID": 0,
                           "className": _textValueClass,
-                          "hpMax": 20,
-                          "hp": 20,
+                          "hpMax": (_textValueClass == "Guerriero") ? 150 : 100,
+                          "hp": (_textValueClass == "Guerriero") ? 150 : 100,
                           "ability": 0,
                           "specializationID": 0,
                           "professionID": 0
@@ -533,6 +531,7 @@ class _ThirdRouteState extends State<ThirdRoute> {
                                           primary: Colors.red))),
                             ],
                           ),
+
                           _createRow("Nome", snapshot.data!["name"]),
                           _createRow("Razza", snapshot.data!["raceName"]),
                           _createRow("Classe", snapshot.data!["className"]),
@@ -543,14 +542,30 @@ class _ThirdRouteState extends State<ThirdRoute> {
                               true,
                               1,
                               5),
-                          _createRow("Vita",
-                              '${snapshot.data!["hp"]}/${snapshot.data!["hpMax"]}'),
+                          _createUpdatableRow(
+                              "Vita momentanea",
+                              '${snapshot.data!["hp"] * snapshot.data!["level"]}',
+                              _life,
+                              true),
+                          //TODO: add HP bonus from armor
+                          _createRow("Vita massima",
+                              '${snapshot.data!["hpMax"] * snapshot.data!["level"]}'),
                           _createUpdatableRow("Monete",
                               "${snapshot.data!["money"]}", _money, true),
+                          //TODO: dropdownbutton for specialization
                           _createUpdatableRow(
                               "specializzazione",
                               snapshot.data!["specializationName"].toString(),
                               _specialization),
+                          // DropdownButton(
+                          //   value: _textValueClass,
+                          //   items: _itemsClass.map((location) {
+                          //     return DropdownMenuItem(
+                          //       child: new Text(location),
+                          //       value: location,
+                          //     );
+                          //   }).toList(),
+                          // ),
                         ],
                       )));
             } else {
@@ -571,6 +586,12 @@ class _ThirdRouteState extends State<ThirdRoute> {
                   title: Text('Scheda personaggio'),
                   onTap: () {
                     Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  title: Text('Sessione'),
+                  onTap: () {
+                    // Navigator.pop(context);
                   },
                 ),
                 ListTile(
